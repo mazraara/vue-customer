@@ -1,11 +1,11 @@
 <template>
-    <div class="about">
-        <h1>ABOUT</h1>
+    <div class="about container">
+        <h1 class="page-header">About</h1>
     </div>
 </template>
 <script>
 export default {
-    name: 'about ',
+    name: 'about',
     data(){
         return {
         }
