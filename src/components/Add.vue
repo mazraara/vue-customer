@@ -74,7 +74,10 @@ export default {
         this.$http
           .post("http://18.224.92.68/index.php/api/customer/add", newCustomer)
           .then(function(response) {
-            this.$router.push({path: '/'});
+            this.$router.push({
+              path: "/",
+              query: { alert: "Customer added." }
+            });
           });
       }
       e.preventDefault();
