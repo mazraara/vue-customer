@@ -1,9 +1,9 @@
 <template>
-    <div class="add container">
-        <Alert v-if="alert" v-bind:message="alert" />
-        <h1 class="page-header">Add Customer</h1>
-        <form v-on:submit="addCustomer">
-            <div class="well">
+  <div class="edit container">
+    <Alert v-if="alert" v-bind:message="alert" />
+    <h1 class="page-header">Edit Customer</h1>
+    <form v-on:submit="updateCustomer">
+        <div class="well">
             <h4>Customer Info</h4>
             <div class="form-group">
                 <label>First Name</label>
@@ -42,14 +42,14 @@
             </div>
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
-    </div>
+    </form>
+  </div>
 </template>
+
 <script>
 import Alert from "./Alert";
-
 export default {
-  name: "add",
+  name: "edit",
   data() {
     return {
       customer: {},
@@ -57,15 +57,22 @@ export default {
     };
   },
   methods: {
-    addCustomer(e) {
+    fetchCustomer(id) {
+      this.$http
+        .get("http://18.224.92.68/index.php/api/customer/" + id)
+        .then(function(response) {
+          this.customer = response.body;
+        });
+    },
+    updateCustomer(e) {
       if (
         !this.customer.first_name ||
         !this.customer.last_name ||
         !this.customer.email
       ) {
-        this.alert = "Please fill all required fields";
+        this.alert = "Please fill in all required fields";
       } else {
-        let newCustomer = {
+        let updateCustomer = {
           first_name: this.customer.first_name,
           last_name: this.customer.last_name,
           phone: this.customer.phone,
@@ -74,18 +81,25 @@ export default {
           city: this.customer.city,
           state: this.customer.state
         };
-
         this.$http
-          .post("http://18.224.92.68/index.php/api/customer/add", newCustomer)
+          .put(
+            "http://18.224.92.68/index.php/api/customer/update/" +
+              this.$route.params.id,
+            updateCustomer
+          )
           .then(function(response) {
             this.$router.push({
               path: "/",
-              query: { alert: "Customer Added" }
+              query: { alert: "Customer Updated" }
             });
           });
+        e.preventDefault();
       }
       e.preventDefault();
     }
+  },
+  created: function() {
+    this.fetchCustomer(this.$route.params.id);
   },
   components: {
     Alert
@@ -93,5 +107,6 @@ export default {
 };
 </script>
 
+<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 </style>
